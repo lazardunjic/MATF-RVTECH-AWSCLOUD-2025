@@ -1,0 +1,30 @@
+{
+  "name": "charging-map",
+  "version": "1.0.0",
+  "description": "Serverless EV Charging Map with LocalStack",
+  "main": "index.js",
+  "scripts": {
+    "__start": "docker-compose up",
+    "__stop": "docker-compose down",
+    "__deploy": "npx serverless deploy --stage dev",
+    "__remove": "npx serverless remove --stage dev",
+    "__logs": "docker-compose logs -f localstack",
+    "__test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "aws",
+    "lambda",
+    "serverless",
+    "localstack",
+    "ev-charging"
+  ],
+  "author": "Lazar Dunjic",
+  "license": "ISC",
+  "dependencies": {
+    "aws-sdk": "^2.1691.0"
+  },
+  "devDependencies": {
+    "serverless": "^3.40.0",
+    "serverless-localstack": "^1.3.1"
+  }
+}
