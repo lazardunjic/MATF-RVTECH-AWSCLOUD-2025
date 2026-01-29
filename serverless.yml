@@ -1,4 +1,4 @@
-service: chargerging-map
+service: charging-map
 frameworkVersion: "3"
 
 plugins:
@@ -19,57 +19,270 @@ custom:
 provider:
   name: aws
   runtime: nodejs18.x
+  stage: ${opt:stage, 'dev'}
   region: us-east-1
+  environment:
+    CHARGERS_TABLE: ${self:service}-chargers-${self:provider.stage}
+    USER_FAVORITES_TABLE: ${self:service}-favorites-${self:provider.stage}
+    REVIEWS_TABLE: ${self:service}-reviews-${self:provider.stage}
+    SYNC_QUEUE_URL: 
+      Ref: SyncQueue
+    NOTIFICATIONS_TOPIC_ARN:
+      Ref: NotificationsTopic
+  iam:
+    role:
+      statements:
+        - Effect: Allow
+          Action:
+            - dynamodb:Query
+            - dynamodb:Scan
+            - dynamodb:GetItem
+            - dynamodb:PutItem
+            - dynamodb:UpdateItem
+            - dynamodb:DeleteItem
+            - dynamodb:BatchWriteItem
+          Resource:
+            - Fn::GetAtt: [ChargersTable, Arn]
+            - Fn::Join:
+              - "/"
+              - - Fn::GetAtt: [ChargersTable, Arn]
+                - "index/*"
+            - Fn::GetAtt: [UserFavoritesTable, Arn]
+            - Fn::GetAtt: [ReviewsTable, Arn]
+        - Effect: Allow
+          Action:
+            - sqs:SendMessage
+            - sqs:ReceiveMessage
+            - sqs:DeleteMessage
+            - sqs:GetQueueAttributes
+          Resource:
+            - Fn::GetAtt: [SyncQueue, Arn]
+        - Effect: Allow
+          Action:
+            - sns:Publish
+          Resource:
+            - Ref: NotificationsTopic
+        - Effect: Allow
+          Action:
+            - logs:CreateLogGroup
+            - logs:CreateLogStream
+            - logs:PutLogEvents
+          Resource: "*"
 
 functions:
-  # Function to get all chargers from DynamoDB
   getChargers:
-    handler: getChargers.getChargers
-    description: Get all chargers
+    handler: functions/getChargers.handler
+    description: Get all chargers with optional filtering
     events:
       - http:
           path: chargers
           method: get
-  # Function to sync data from Open Charge Map every minute
-  syncOCMdata:
-    handler: syncOCMdata.syncOCM
-    description: Sync data from Open Charge Map
+          cors: true
+
+  getChargerById:
+    handler: functions/getChargerById.handler
+    description: Get charger details by ID
     events:
-      - schedule:
-          rate: rate(1 minute)
+      - http:
+          path: chargers/{id}
+          method: get
+          cors: true
+
+  searchChargers:
+    handler: functions/searchChargers.handler
+    description: Search chargers by various criteria
+    events:
+      - http:
+          path: search
+          method: get
+          cors: true
+
+  syncOCMdata:
+    handler: functions/syncOCMdata.handler
+    description: Sync chargers from Open Charge Map API
+    timeout: 300
+    events:
+      - http:
+          path: sync
+          method: get
+          cors: true
+      # Scheduled sync every 5 minutes (enable later)
+      # - schedule:
+      #     rate: rate(5 minutes)
+      #     enabled: true
+
+  #za sad ovako
+  addFavorite:
+    handler: functions/addFavorite.handler
+    description: Add charger to user favorites
+    events:
+      - http:
+          path: favorites
+          method: post
+          cors: true
+
+  getFavorites:
+    handler: functions/getFavorites.handler
+    description: Get user's favorite chargers
+    events:
+      - http:
+          path: favorites
+          method: get
+          cors: true
+
+  addReview:
+    handler: functions/addReview.handler
+    description: Add review for a charger
+    events:
+      - http:
+          path: chargers/{id}/reviews
+          method: post
+          cors: true
+
+  getReviews:
+    handler: functions/getReviews.handler
+    description: Get reviews for a charger
+    events:
+      - http:
+          path: chargers/{id}/reviews
+          method: get
+          cors: true
 
 resources:
   Resources:
-    # DynamoDB Table for chargers
     ChargersTable:
       Type: AWS::DynamoDB::Table
       Properties:
-        TableName: Chargers
+        TableName: ${self:provider.environment.CHARGERS_TABLE}
         BillingMode: PAY_PER_REQUEST
         AttributeDefinitions:
           - AttributeName: chargeId
             AttributeType: S
+          - AttributeName: town
+            AttributeType: S
+          - AttributeName: powerKW
+            AttributeType: N
         KeySchema:
           - AttributeName: chargeId
             KeyType: HASH
-    # http:/punjaci-website.s3-website.localhost.localstack.cloud:4566
-    # S3 Bucket for static website hosting
+        GlobalSecondaryIndexes:
+          - IndexName: TownIndex
+            KeySchema:
+              - AttributeName: town
+                KeyType: HASH
+            Projection:
+              ProjectionType: ALL
+          - IndexName: PowerIndex
+            KeySchema:
+              - AttributeName: powerKW
+                KeyType: HASH
+            Projection:
+              ProjectionType: ALL
+
+    UserFavoritesTable:
+      Type: AWS::DynamoDB::Table
+      Properties:
+        TableName: ${self:provider.environment.USER_FAVORITES_TABLE}
+        BillingMode: PAY_PER_REQUEST
+        AttributeDefinitions:
+          - AttributeName: userId
+            AttributeType: S
+          - AttributeName: chargerId
+            AttributeType: S
+        KeySchema:
+          - AttributeName: userId
+            KeyType: HASH
+          - AttributeName: chargerId
+            KeyType: RANGE
+
+    ReviewsTable:
+      Type: AWS::DynamoDB::Table
+      Properties:
+        TableName: ${self:provider.environment.REVIEWS_TABLE}
+        BillingMode: PAY_PER_REQUEST
+        AttributeDefinitions:
+          - AttributeName: chargerId
+            AttributeType: S
+          - AttributeName: reviewId
+            AttributeType: S
+        KeySchema:
+          - AttributeName: chargerId
+            KeyType: HASH
+          - AttributeName: reviewId
+            KeyType: RANGE
+
+    SyncQueue:
+      Type: AWS::SQS::Queue
+      Properties:
+        QueueName: ${self:service}-sync-queue-${self:provider.stage}
+        VisibilityTimeout: 300
+        MessageRetentionPeriod: 1209600  # 
+        RedrivePolicy:
+          deadLetterTargetArn:
+            Fn::GetAtt: [SyncDLQ, Arn]
+          maxReceiveCount: 3
+
+    SyncDLQ:
+      Type: AWS::SQS::Queue
+      Properties:
+        QueueName: ${self:service}-sync-dlq-${self:provider.stage}
+        MessageRetentionPeriod: 1209600  
+
+    NotificationsTopic:
+      Type: AWS::SNS::Topic
+      Properties:
+        TopicName: ${self:service}-notifications-${self:provider.stage}
+        DisplayName: Charging Map Notifications
+
     WebsiteBucket:
       Type: AWS::S3::Bucket
       Properties:
-        BucketName: punjaci-website
+        BucketName: ${self:service}-website-${self:provider.stage}
         AccessControl: PublicRead
         WebsiteConfiguration:
           IndexDocument: index.html
           ErrorDocument: error.html
+
     WebsiteBucketPolicy:
       Type: AWS::S3::BucketPolicy
       Properties:
-        Bucket: !Ref WebsiteBucket
+        Bucket:
+          Ref: WebsiteBucket
         PolicyDocument:
           Version: "2012-10-17"
           Statement:
             - Effect: Allow
               Principal: "*"
               Action: s3:GetObject
-              Resource: !Join ["", ["arn:aws:s3:::", !Ref WebsiteBucket, "/*"]]
+              Resource:
+                Fn::Join:
+                  - ""
+                  - - "arn:aws:s3:::"
+                    - Ref: WebsiteBucket
+                    - "/*"
+
+  Outputs:
+    ApiGatewayUrl:
+      Description: API Gateway endpoint URL
+      Value:
+        Fn::Sub: https://${ApiGatewayRestApi}.execute-api.${AWS::Region}.amazonaws.com/${self:provider.stage}
+    
+    WebsiteURL:
+      Description: Static website URL
+      Value:
+        Fn::GetAtt: [WebsiteBucket, WebsiteURL]
+    
+    ChargersTableName:
+      Description: DynamoDB table name
+      Value:
+        Ref: ChargersTable
+    
+    UserFavoritesTableName:
+      Description: User Favorites table name
+      Value:
+        Ref: UserFavoritesTable
+    
+    ReviewsTableName:
+      Description: Reviews table name
+      Value:
+        Ref: ReviewsTable

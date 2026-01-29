@@ -16,7 +16,9 @@
     "lambda",
     "serverless",
     "localstack",
-    "ev-charging"
+    "ev-charging",
+    "dynamodb",
+    "api-gateway"
   ],
   "author": "Lazar Dunjic",
   "license": "ISC",
