@@ -4,26 +4,25 @@
   "description": "Serverless EV Charging Map with LocalStack",
   "main": "index.js",
   "scripts": {
-    "__start": "docker-compose up",
-    "__stop": "docker-compose down",
-    "__deploy": "npx serverless deploy --stage dev",
-    "__remove": "npx serverless remove --stage dev",
-    "__logs": "docker-compose logs -f localstack",
-    "__test": "echo \"Error: no test specified\" && exit 1"
+    "start": "docker-compose up -d",
+    "stop": "docker-compose down",
+    "deploy": "npx serverless deploy --stage dev",
+    "remove": "npx serverless remove --stage dev",
+    "logs": "docker-compose logs -f localstack",
+    "info": "npx serverless info --stage dev"
   },
   "keywords": [
     "aws",
     "lambda",
     "serverless",
     "localstack",
-    "ev-charging",
-    "dynamodb",
-    "api-gateway"
+    "ev-charging"
   ],
-  "author": "Lazar Dunjic",
-  "license": "ISC",
+  "author": "Your Name",
+  "license": "MIT",
   "dependencies": {
-    "aws-sdk": "^2.1691.0"
+    "aws-sdk": "^2.1691.0",
+    "dotenv": "^17.2.3"
   },
   "devDependencies": {
     "serverless": "^3.40.0",
