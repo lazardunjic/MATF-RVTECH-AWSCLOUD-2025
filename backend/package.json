@@ -4,12 +4,12 @@
   "description": "Serverless EV Charging Map with LocalStack",
   "main": "index.js",
   "scripts": {
-    "start": "docker-compose up -d",
-    "stop": "docker-compose down",
-    "deploy": "npx serverless deploy --stage dev",
-    "remove": "npx serverless remove --stage dev",
-    "logs": "docker-compose logs -f localstack",
-    "info": "npx serverless info --stage dev"
+    "deploy": "serverless deploy --stage dev",
+    "deploy:prod": "serverless deploy --stage prod",
+    "invoke:sync": "serverless invoke -f syncOCMdata --stage dev --log",
+    "invoke:get": "serverless invoke -f getChargers --stage dev --log",
+    "remove": "serverless remove --stage dev",
+    "logs": "serverless logs -f getChargers --stage dev"
   },
   "keywords": [
     "aws",

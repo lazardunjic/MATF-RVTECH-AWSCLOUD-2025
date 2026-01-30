@@ -1,41 +1,53 @@
-const AWS = require('aws-sdk');
 const https = require('https');
+const { dynamodb } = require('../lib/dynamodb');
 
-const endpoint = process.env.AWS_ENDPOINT_URL || 'http://localhost:4566';
-const dynamodb = new AWS.DynamoDB.DocumentClient({
-  endpoint: endpoint,  // ✅ DODATO
-  region: 'us-east-1',
-  accessKeyId: 'test',
-  secretAccessKey: 'test'
-});
-
-function fetchFromOCM(){
-    return new Promise((resolve, reject) => {
-        const params = new URLSearchParams({
-            output: 'json',
-            countrycode: 'RS',
-            maxresults: '200',
-            compact: 'true',
-            verbose: 'false',
-            key: process.env.OCM_API_KEY
-        });
-        const url = `https://api.openchargemap.io/v3/poi/?${params.toString()}`;
-        console.log('Fetching from OCM: ', url);
-        
-        https.get(url, (res) => {
-            let data = '';
-            res.on('data', (chunk) => { data += chunk; });
-            res.on('end', () => {
-                 try {
-                    const parsed = JSON.parse(data);
-                    console.log(`Received ${parsed.length} chargers from OCM`);
-                    resolve(parsed);
-                } catch (error) {
-                    reject(new Error('Failed to parse OCM response'));
-                }
+async function fetchFromOCM(){
+    const countries = ['RS', 'HR', 'BA', 'ME', 'MK', 'AL', 'SI', 'BG', 'RO', 'GR'];
+    const allChargers = [];
+    
+    console.log(`Fetching chargers from ${countries.length} Balkan countries...`);
+    
+    for (const country of countries) {
+        try {
+            const params = new URLSearchParams({
+                output: 'json',
+                countrycode: country,
+                maxresults: '500',
+                compact: 'true',
+                verbose: 'false',
+                key: process.env.OCM_API_KEY
             });
-        }).on('error', reject);
-    });
+            
+            const url = `https://api.openchargemap.io/v3/poi/?${params.toString()}`;
+            console.log(`Fetching from ${country}...`);
+            
+            const data = await new Promise((resolve, reject) => {
+                https.get(url, (res) => {
+                    let data = '';
+                    res.on('data', (chunk) => { data += chunk; });
+                    res.on('end', () => {
+                        try {
+                            const parsed = JSON.parse(data);
+                            console.log(`  ✓ ${country}: ${parsed.length} chargers`);
+                            resolve(parsed);
+                        } catch (error) {
+                            reject(new Error(`Failed to parse ${country} response`));
+                        }
+                    });
+                }).on('error', reject);
+            });
+            
+            allChargers.push(...data);
+            
+            await new Promise(resolve => setTimeout(resolve, 1000));
+            
+        } catch (error) {
+            console.error(`Error fetching ${country}:`, error.message);
+        }
+    }
+    
+    console.log(`Total chargers fetched: ${allChargers.length}`);
+    return allChargers;
 }
 
 function transformCharger(ocmCharger) {

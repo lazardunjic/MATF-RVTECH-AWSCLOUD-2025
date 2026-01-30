@@ -2,6 +2,15 @@
 
 Project assignment for AWS CLOUD course 2025/2026. Serverless application for locating electric vehicle charging stations in Serbia, built with AWS Lambda, DynamoDB, and LocalStack.
 
+## 📁 Project Structure
+```
+├── infrastructure/    # LocalStack & IaC
+├── backend/          # Serverless API (Lambda + DynamoDB)
+├── frontend/         # React web app
+├── docs/            # Documentation
+└── scripts/         # Helper scripts
+```
+
 ## 🏗️ Architecture
 
 - 
@@ -10,19 +19,15 @@ Project assignment for AWS CLOUD course 2025/2026. Serverless application for lo
 ## 🚀 Quick Start
 
 ### Prerequisites
-
-- 
-- 
+- Node.js 18+
+- Docker & Docker Compose
+- AWS CLI (configured for LocalStack)
 
 ### Setup
-
-- 
-- 
-
-## 📡 API Endpoints
-
-- 
-- 
+```bash
+# Start infrastructure
+./infrastructure/scripts/setup.sh
+```
 
 ## 🛠️ Development
 
@@ -31,8 +36,10 @@ Project assignment for AWS CLOUD course 2025/2026. Serverless application for lo
 
 ## 📊 Tech Stack
 
-- 
-- 
+- **Backend**: AWS Lambda (Node.js), DynamoDB, API Gateway
+- **Frontend**: React, Leaflet.js
+- **Infrastructure**: LocalStack, Docker, Serverless Framework
+- **Data Source**: Open Charge Map API
 
 ## 🔮 Roadmap
 

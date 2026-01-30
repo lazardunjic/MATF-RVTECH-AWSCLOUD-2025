@@ -1,24 +1,16 @@
-const AWS = require('aws-sdk');
-
-const endpoint = process.env.AWS_ENDPOINT_URL || 'http://localhost:4566';
-const dynamodb = new AWS.DynamoDB.DocumentClient({
-  endpoint: endpoint,  
-  region: 'us-east-1',
-  accessKeyId: 'test',
-  secretAccessKey: 'test'
-});
+const { dynamodb } = require('../lib/dynamodb');
 
 exports.handler = async (event) => {
-  console.log('Getting chargers from DynamoDB...');
+  const queryParams = event.queryStringParameters || {};
+  const { q, town, minPower, maxPower, status, limit } = queryParams;
+  
+  console.log('Search params:', queryParams);
   
   try {
-    const queryParams = event.queryStringParameters || {};
-    const { limit, town, minPower, status } = queryParams;
+    const tableName = process.env.CHARGERS_TABLE || 'charging-map-chargers-dev';
+    const params = { TableName: tableName };
     
-    const params = {
-      TableName: process.env.CHARGERS_TABLE || 'charging-map-chargers-dev'
-    };
-    
+    // Search by town using GSI
     if (town) {
       params.IndexName = 'TownIndex';
       params.KeyConditionExpression = 'town = :town';
@@ -42,13 +34,24 @@ exports.handler = async (event) => {
       };
     }
     
+    // Scan with filters
     let filterExpressions = [];
     params.ExpressionAttributeValues = {};
     params.ExpressionAttributeNames = {};
     
+    if (q) {
+      filterExpressions.push('(contains(title, :q) OR contains(town, :q) OR contains(address, :q))');
+      params.ExpressionAttributeValues[':q'] = q;
+    }
+    
     if (minPower) {
       filterExpressions.push('powerKW >= :minPower');
       params.ExpressionAttributeValues[':minPower'] = Number(minPower);
+    }
+    
+    if (maxPower) {
+      filterExpressions.push('powerKW <= :maxPower');
+      params.ExpressionAttributeValues[':maxPower'] = Number(maxPower);
     }
     
     if (status) {
@@ -75,11 +78,12 @@ exports.handler = async (event) => {
       body: JSON.stringify({
         success: true,
         count: result.Count,
-        chargers: result.Items
+        chargers: result.Items,
+        query: queryParams
       })
     };
   } catch (error) {
-    console.error('Error getting chargers:', error);
+    console.error('Search error:', error);
     return {
       statusCode: 500,
       headers: {

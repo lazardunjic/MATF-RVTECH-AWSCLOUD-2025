@@ -1,12 +1,4 @@
-const AWS = require('aws-sdk');
-
-const endpoint = process.env.AWS_ENDPOINT_URL || 'http://localhost:4566';
-const dynamodb = new AWS.DynamoDB.DocumentClient({
-  endpoint: endpoint,  
-  region: 'us-east-1',
-  accessKeyId: 'test',
-  secretAccessKey: 'test'
-});
+const { dynamodb } = require('../lib/dynamodb');
 
 exports.handler = async (event) => {
   console.log('Getting chargers from DynamoDB...');
@@ -15,10 +7,10 @@ exports.handler = async (event) => {
     const queryParams = event.queryStringParameters || {};
     const { limit, town, minPower, status } = queryParams;
     
-    const params = {
-      TableName: process.env.CHARGERS_TABLE || 'charging-map-chargers-dev'
-    };
+    const tableName = process.env.CHARGERS_TABLE || 'charging-map-chargers-dev';
+    const params = { TableName: tableName };
     
+    // Query by town using GSI
     if (town) {
       params.IndexName = 'TownIndex';
       params.KeyConditionExpression = 'town = :town';
@@ -42,6 +34,7 @@ exports.handler = async (event) => {
       };
     }
     
+    // Scan with filters
     let filterExpressions = [];
     params.ExpressionAttributeValues = {};
     params.ExpressionAttributeNames = {};
