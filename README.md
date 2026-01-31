@@ -6,7 +6,7 @@ Serverless application for locating electric vehicle charging stations across th
 
 **Serverless Backend:**
 - **AWS Lambda** - 4 serverless functions for data sync and retrieval
-- **DynamoDB** - NoSQL database for ~2500+ charging stations
+- **DynamoDB** - NoSQL database for charging stations
 - **API Gateway** - RESTful API endpoints
 - **LocalStack** - Local AWS cloud emulation
 
@@ -65,6 +65,7 @@ This will:
 - [x] DynamoDB data storage
 - [x] EX YU-wide charging station coverage 
 - [x] Frontend with interactive map
+- [ ] GPS feature
 - [ ] AWS Cognito authentication
 - [ ] Favorite stations feature
 - [ ] Mobile responsive design
