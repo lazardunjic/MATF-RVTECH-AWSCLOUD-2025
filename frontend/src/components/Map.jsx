@@ -3,7 +3,6 @@ import { MapContainer, TileLayer, Marker, Popup, useMap } from 'react-leaflet';
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
 
-// Fix za Leaflet ikone u React
 delete L.Icon.Default.prototype._getIconUrl;
 L.Icon.Default.mergeOptions({
   iconRetinaUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon-2x.png',
@@ -14,7 +13,7 @@ L.Icon.Default.mergeOptions({
 const Map = ({ chargers, center, zoom }) => {
   return (
     <MapContainer 
-      center={center || [44.0, 21.0]} // Centar Balkana
+      center={center || [44.0, 21.0]} 
       zoom={zoom || 6} 
       style={{ height: '100vh', width: '100%' }}
     >
