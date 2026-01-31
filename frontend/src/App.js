@@ -1,3 +1,4 @@
+import { API_ENDPOINTS } from './config';
 import React, { useEffect, useState } from 'react';
 import Map from './components/Map';
 import Sidebar from './components/Sidebar';
@@ -18,60 +19,63 @@ function App() {
     status: ''
   });
 
-  // Fetch chargers
-  useEffect(() => {
-    const fetchChargers = async () => {
-      try {
-        const response = await fetch('/api/chargers');
-        const data = await response.json();
-        setChargers(data.chargers || []);
-        setFilteredChargers(data.chargers || []);
-        setLoading(false);
-      } catch (err) {
-        console.error('Error fetching chargers:', err);
-        // Fallback to mock data for testing
-        const mockData = generateMockData();
-        setChargers(mockData);
-        setFilteredChargers(mockData);
-        setLoading(false);
+ useEffect(() => {
+  const fetchChargers = async () => {
+    try {
+      console.log('Fetching chargers...');
+      const response = await fetch(API_ENDPOINTS.GET_CHARGERS);
+      
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
       }
-    };
-
-    fetchChargers();
-  }, []);
-
-  // Apply filters and search
-  useEffect(() => {
-    let result = [...chargers];
-
-    // Search filter
-    if (searchTerm) {
-      result = result.filter(charger =>
-        charger.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        charger.town.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        charger.country.toLowerCase().includes(searchTerm.toLowerCase())
-      );
+      
+      const data = await response.json();
+      console.log(`Received ${data.chargers?.length || 0} chargers`);
+      
+      setChargers(data.chargers || []);
+      setFilteredChargers(data.chargers || []);
+      setLoading(false);
+    } catch (err) {
+      console.error('Error while fetching chargers:', err);
+      
+      console.log('Using mock data');
+      const mockData = generateMockData();
+      setChargers(mockData);
+      setFilteredChargers(mockData);
+      setLoading(false);
     }
+  };
 
-    // Country filter
-    if (filters.country) {
-      result = result.filter(charger => charger.country === filters.country);
-    }
+  fetchChargers();
+}, []);
 
-    // Power filter
-    if (filters.minPower > 0) {
-      result = result.filter(charger => charger.powerKW >= filters.minPower);
-    }
+useEffect(() => {
+  let result = [...chargers];
 
-    // Status filter
-    if (filters.status) {
-      result = result.filter(charger => 
-        charger.status && charger.status.toLowerCase().includes(filters.status.toLowerCase())
-      );
-    }
+  if (searchTerm) {
+    result = result.filter(charger =>
+      charger.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      charger.town.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      charger.country.toLowerCase().includes(searchTerm.toLowerCase())
+    );
+  }
 
-    setFilteredChargers(result);
-  }, [searchTerm, filters, chargers]);
+  if (filters.country) {
+    result = result.filter(charger => charger.country === filters.country);
+  }
+
+  if (filters.minPower > 0) {
+    result = result.filter(charger => charger.powerKW >= filters.minPower);
+  }
+
+  if (filters.status) {
+    result = result.filter(charger => 
+      charger.status && charger.status.toLowerCase().includes(filters.status.toLowerCase())
+    );
+  }
+
+  setFilteredChargers(result); 
+}, [searchTerm, filters, chargers]);
 
   const handleChargerClick = (charger) => {
     setSelectedCharger(charger);
@@ -139,7 +143,6 @@ function App() {
   );
 }
 
-// Mock data for testing
 function generateMockData() {
   return [
     {

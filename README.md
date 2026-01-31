@@ -1,6 +1,6 @@
-# 🚗⚡ EV Charging Map - Balkan Region
+# 🚗⚡ EV Charging Map - EX YU Region
 
-Serverless application for locating electric vehicle charging stations across the Balkan region. Built with AWS Lambda, DynamoDB, and LocalStack for the AWS Cloud course 2025/2026.
+Serverless application for locating electric vehicle charging stations across the EX YU region. Built with AWS Lambda, DynamoDB, and LocalStack for the AWS Cloud course 2025/2026.
 
 ## 🏗️ Architecture
 
@@ -24,7 +24,7 @@ Serverless application for locating electric vehicle charging stations across th
 git clone <repository-url>
 cd MATF-RVTECH-AWSCLOUD-2025
 
-# Setup infrastructure, deploy backend, and sync data
+# Do all setup with
 ./infrastructure/scripts/setup.sh
 ```
 
@@ -32,36 +32,9 @@ This will:
 1. Start LocalStack container
 2. Deploy 4 Lambda functions
 3. Create DynamoDB table
-4. Sync ~2500+ charging stations from Balkan region
+4. Sync data
 5. Display API Gateway URL and stats
-
-## 🛠️ Development
-
-### Backend
-```bash
-cd backend
-
-# Deploy changes
-npm run deploy
-```
-
-### Frontend
-```bash
-cd frontend
-
-# Install dependencies
-npm install
-
-# Start development server
-npm start
-
-# Build for production
-npm run build
-```
-
-## 📡 API Endpoints
-
-TO DO
+6. Show map with chargers
 
 ## 📊 Tech Stack
 
@@ -85,19 +58,17 @@ TO DO
 - Open Charge Map API
 
 ## 🧪 Testing
-TO DO
+- WILL BE DONE IN FUTURE 
 ## 🔮 Roadmap
 
 - [x] Backend API with Lambda functions
 - [x] DynamoDB data storage
-- [x] Balkan-wide charging station coverage (~2500+ stations)
+- [x] EX YU-wide charging station coverage 
 - [x] Frontend with interactive map
 - [ ] AWS Cognito authentication
 - [ ] Favorite stations feature
-- [ ] Real-time availability status
 - [ ] Mobile responsive design
-- [ ] Search by connector type
-- [ ] Export stations to CSV/JSON
+- [ ] Search by various parameters 
 
 ## 👤 Author
 Lazar Dunjic  265/2021

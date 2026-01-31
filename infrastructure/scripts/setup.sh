@@ -7,7 +7,7 @@ echo "Starting LocalStack..."
 cd infrastructure/localstack
 docker-compose up -d
 
-echo "LocalStack is starting up... Please wait..."
+echo "LocalStack is starting up..."
 sleep 10
 
 if docker ps | grep -q localstack; then
@@ -39,10 +39,10 @@ awslocal lambda invoke \
 if [ $? -eq 0 ]; then
     echo "Sync started (running in background)"
 else
-    echo "Sync failed"
+    echo "Sync might have failed"
 fi
 
-echo "Waiting for sync to complete..."
+echo "Waiting 20 seconds for sync to complete..."
 sleep 20
 echo ""
 
@@ -63,7 +63,14 @@ echo ""
 API_ID=$(awslocal apigateway get-rest-apis --query 'items[0].id' --output text 2>/dev/null)
 API_URL="http://localhost:4566/restapis/$API_ID/dev/_user_request_"
 
-echo "Setup Completed!"
-echo "API ID: $API_ID"
-echo "API Gateway URL: $API_URL/chargers"
+echo "Setup Complete!"
 echo ""
+echo "Chargers: $COUNT"
+echo "API ID: $API_ID"
+echo ""
+echo "Starting frontend..."
+echo ""
+
+cd ../frontend
+npm install
+npm start

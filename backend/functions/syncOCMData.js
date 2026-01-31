@@ -2,7 +2,7 @@ const https = require('https');
 const { dynamodb } = require('../lib/dynamodb');
 
 async function fetchFromOCM(){
-    const countries = ['RS', 'HR', 'BA', 'ME', 'MK', 'AL', 'SI', 'BG', 'RO', 'GR'];
+    const countries = ['RS', 'HR', 'BA', 'ME', 'MK', 'SI', 'XK'];
     const allChargers = [];
     
     console.log(`Fetching chargers from ${countries.length} Balkan countries...`);
