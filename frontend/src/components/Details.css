@@ -23,7 +23,7 @@
 }
 
 .detail-header {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: linear-gradient(135deg, #68c4af 0%, #39c4a3 100%);
   color: white;
   padding: 20px;
   border-radius: 16px 16px 0 0;
@@ -144,7 +144,7 @@
 }
 
 .btn-primary {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: #28584d;
   color: white;
 }
 

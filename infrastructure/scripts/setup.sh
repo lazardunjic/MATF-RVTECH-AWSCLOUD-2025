@@ -30,6 +30,12 @@ fi
 echo "Backend deployed"
 echo ""
 
+echo ""
+echo "Updating frontend API configuration..."
+cd ..
+./infrastructure/scripts/update-api-config.sh
+echo ""
+
 echo "Syncing data from Open Charge Map..."
 awslocal lambda invoke \
   --function-name charging-map-dev-syncOCMData \
@@ -71,6 +77,6 @@ echo ""
 echo "Starting frontend..."
 echo ""
 
-cd ../frontend
+cd frontend
 npm install
 npm start

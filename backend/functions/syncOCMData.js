@@ -1,11 +1,21 @@
 const https = require('https');
 const { dynamodb } = require('../lib/dynamodb');
 
+const COUNTRY_CODE_MAP = {
+  'RS': 'Serbia',
+  'HR': 'Croatia',
+  'BA': 'Bosnia and Herzegovina',
+  'ME': 'Montenegro',
+  'MK': 'North Macedonia',
+  'SI': 'Slovenia',
+  'XK': 'Serbia'
+};
+
 async function fetchFromOCM(){
     const countries = ['RS', 'HR', 'BA', 'ME', 'MK', 'SI', 'XK'];
     const allChargers = [];
     
-    console.log(`Fetching chargers from ${countries.length} Balkan countries...`);
+    console.log(`Fetching chargers from ${countries.length} EX-YU countries...`);
     
     for (const country of countries) {
         try {
@@ -13,7 +23,7 @@ async function fetchFromOCM(){
                 output: 'json',
                 countrycode: country,
                 maxresults: '500',
-                compact: 'true',
+                compact: 'false',
                 verbose: 'false',
                 key: process.env.OCM_API_KEY
             });
@@ -37,7 +47,12 @@ async function fetchFromOCM(){
                 }).on('error', reject);
             });
             
-            allChargers.push(...data);
+            const chargersWithCountry = data.map(charger => ({
+              ...charger,
+              _countryCode: country
+            }));
+
+            allChargers.push(...chargersWithCountry);
             
             await new Promise(resolve => setTimeout(resolve, 1000));
             
@@ -54,6 +69,10 @@ function transformCharger(ocmCharger) {
   const connection = ocmCharger.Connections?.[0] || {};
   const address = ocmCharger.AddressInfo || {};
   
+  const countryName = address.Country?.Title || 
+                      COUNTRY_CODE_MAP[ocmCharger._countryCode] || 
+                      'Unknown';
+
   return {
     chargeId: String(ocmCharger.ID),
     title: address.Title || 'Unknown Charging Station',
@@ -63,7 +82,7 @@ function transformCharger(ocmCharger) {
     address: address.AddressLine1 || '',
     postcode: address.Postcode || '',
     stateOrProvince: address.StateOrProvince || '',
-    country: 'Serbia',
+    country: countryName,
     phone: address.ContactTelephone1 || null,
     website: address.RelatedURL || null,
     powerKW: connection.PowerKW || 0,

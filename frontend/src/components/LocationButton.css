@@ -1,0 +1,67 @@
+.location-button-container {
+  position: fixed;
+  top: 82px;
+  right: 10px; 
+  z-index: 1000;
+}
+
+.location-button {
+  background: #68c4af;
+  color: white;
+  border: 2px solid #68c4af;
+  border-radius: 4px;
+  width: 34px; 
+  height: 34px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  box-shadow: 0 1px 5px rgba(104, 196, 175, 0.3);
+  transition: all 0.2s ease;
+  margin: 0;
+  padding: 0;
+}
+
+.location-button:hover {
+  background-color: #68c4af;
+}
+
+.location-button:hover svg {
+  color: white !important;
+}
+
+.location-button:active {
+  background-color: #1f5a4c;
+}
+
+.location-button:active svg {
+  color: white !important;
+}
+
+.location-button:disabled {
+  opacity: 0.4;
+  cursor: default;
+}
+
+.location-button.loading {
+  animation: pulse 1.5s infinite;
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.5; }
+}
+
+.location-error {
+  position: fixed;
+  top: 127px; 
+  right: 10px;
+  background: #ff4444;
+  color: white;
+  padding: 8px 12px;
+  border-radius: 4px;
+  font-size: 0.85rem;
+  max-width: 200px;
+  z-index: 1000;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+}

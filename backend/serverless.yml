@@ -56,7 +56,6 @@ functions:
           path: sync
           method: get
           cors: true
-          async: true
 
   getChargers:
     handler: functions/getChargers.handler
@@ -68,7 +67,6 @@ functions:
           method: get
           cors: true
 
-  # Get charger by ID
   getChargerById:
     handler: functions/getChargerById.handler
     description: Get charger details by ID
@@ -79,7 +77,6 @@ functions:
           method: get
           cors: true
 
-  # Search chargers
   searchChargers:
     handler: functions/searchChargers.handler
     description: Search chargers by various criteria
@@ -92,7 +89,6 @@ functions:
 
 resources:
   Resources:
-    # DynamoDB Table - Chargers
     ChargersTable:
       Type: AWS::DynamoDB::Table
       Properties:
@@ -109,20 +105,38 @@ resources:
           - AttributeName: chargeId
             KeyType: HASH
         GlobalSecondaryIndexes:
-          # Index for querying by town
           - IndexName: TownIndex
             KeySchema:
               - AttributeName: town
                 KeyType: HASH
             Projection:
               ProjectionType: ALL
-          # Index for querying by power
           - IndexName: PowerIndex
             KeySchema:
               - AttributeName: powerKW
                 KeyType: HASH
             Projection:
               ProjectionType: ALL
+    
+    GatewayResponseDefault4XX:
+      Type: AWS::ApiGateway::GatewayResponse
+      Properties:
+        ResponseParameters:
+          gatewayresponse.header.Access-Control-Allow-Origin: "'*'"
+          gatewayresponse.header.Access-Control-Allow-Headers: "'*'"
+        ResponseType: DEFAULT_4XX
+        RestApiId:
+          Ref: ApiGatewayRestApi
+    
+    GatewayResponseDefault5XX:
+      Type: AWS::ApiGateway::GatewayResponse
+      Properties:
+        ResponseParameters:
+          gatewayresponse.header.Access-Control-Allow-Origin: "'*'"
+          gatewayresponse.header.Access-Control-Allow-Headers: "'*'"
+        ResponseType: DEFAULT_5XX
+        RestApiId:
+          Ref: ApiGatewayRestApi
 
   Outputs:
     ApiGatewayUrl:

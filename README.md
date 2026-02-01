@@ -66,10 +66,9 @@ This will:
 - [x] EX YU-wide charging station coverage 
 - [x] Frontend with interactive map
 - [ ] GPS feature
+- [ ] Search by various parameters
+- [ ] Mobile responsive design 
 - [ ] AWS Cognito authentication
-- [ ] Favorite stations feature
-- [ ] Mobile responsive design
-- [ ] Search by various parameters 
 
 ## 👤 Author
 Lazar Dunjic  265/2021

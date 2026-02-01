@@ -4,13 +4,20 @@ import './Details.css';
 const Details = ({ charger, onClose }) => {
   if (!charger) return null;
 
+  const displayValue = (value) => {
+    if (value === null || value === undefined || value === '' || value === 0 || value === '0') {
+      return 'Not available';
+    }
+    return value;
+  };
+
   return (
     <div className="detail-panel">
       <div className="detail-header">
         <button className="detail-close" onClick={onClose}>✕</button>
         <div className="detail-title">{charger.title}</div>
         <div className="detail-subtitle">
-           {charger.address || charger.town}, {charger.country}
+          {displayValue(charger.address)}, {displayValue(charger.town)}, {charger.country}
         </div>
       </div>
       
@@ -24,15 +31,17 @@ const Details = ({ charger, onClose }) => {
             </div>
             <div className="info-box">
               <div className="info-box-label">Connector</div>
-              <div className="info-box-value">{charger.connectionType}</div>
+              <div className="info-box-value">{displayValue(charger.connectionType)}</div>
             </div>
             <div className="info-box">
               <div className="info-box-label">Voltage</div>
-              <div className="info-box-value">{charger.voltage || 'N/A'} V</div>
+              <div className="info-box-value">
+                {charger.voltage && charger.voltage > 0 ? `${charger.voltage} V` : 'Not available'}
+              </div>
             </div>
             <div className="info-box">
               <div className="info-box-label">Current</div>
-              <div className="info-box-value">{charger.currentType || 'N/A'}</div>
+              <div className="info-box-value">{displayValue(charger.currentType)}</div>
             </div>
           </div>
         </div>
@@ -41,7 +50,7 @@ const Details = ({ charger, onClose }) => {
           <div className="detail-section-title">Status & Availability</div>
           <div className="detail-info-item">
             <div className="detail-info-label">Status</div>
-            <div className="detail-info-value">{charger.status || 'Unknown'}</div>
+            <div className="detail-info-value">{displayValue(charger.status)}</div>
           </div>
           <div className="detail-info-item">
             <div className="detail-info-label">Number of Points</div>
@@ -49,7 +58,7 @@ const Details = ({ charger, onClose }) => {
           </div>
           <div className="detail-info-item">
             <div className="detail-info-label">Usage Type</div>
-            <div className="detail-info-value">{charger.usageType || 'Unknown'}</div>
+            <div className="detail-info-value">{displayValue(charger.usageType)}</div>
           </div>
         </div>
 
@@ -57,7 +66,7 @@ const Details = ({ charger, onClose }) => {
           <div className="detail-section-title">Operator</div>
           <div className="detail-info-item">
             <div className="detail-info-label">Operator Name</div>
-            <div className="detail-info-value">{charger.operatorName || 'Unknown'}</div>
+            <div className="detail-info-value">{displayValue(charger.operatorName)}</div>
           </div>
           {charger.phone && (
             <div className="detail-info-item">
