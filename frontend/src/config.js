@@ -1,5 +1,5 @@
 // Auto-generated configuration
-// Last updated: нед,  1. феб 2026.  15:50:55 CET
+// Last updated: нед,  1. феб 2026.  16:21:14 CET
 
 export const API_BASE_URL = 'http://localhost:4566/restapis/cplrgdctki/dev/_user_request_';
 

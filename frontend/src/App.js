@@ -18,6 +18,7 @@ function App() {
   const [loading, setLoading] = useState(true);
   const [selectedCharger, setSelectedCharger] = useState(null);
   const [searchTerm, setSearchTerm] = useState('');
+  const [showRoute, setShowRoute] = useState(false); 
   const [filters, setFilters] = useState({
     country: '',
     minPower: 0,
@@ -36,13 +37,7 @@ function App() {
         
         const data = await response.json();
         console.log(`Received ${data.chargers?.length || 0} chargers`);
-        console.log('=== RAW API RESPONSE ===');
-      console.log('Full data:', data);
-      console.log('Type of data:', typeof data);
-      console.log('Data keys:', Object.keys(data));
-      console.log('Chargers array length:', data.chargers?.length);
-      console.log('=== FIRST CHARGER ===');
-      console.log('First charger:', JSON.stringify(data.chargers?.[0], null, 2));
+        
         setChargers(data.chargers || []);
         setFilteredChargers(data.chargers || []);
         setLoading(false);
@@ -54,7 +49,7 @@ function App() {
       }
     };
 
-  fetchChargers();
+    fetchChargers();
   }, []);
 
   useEffect(() => {
@@ -63,7 +58,7 @@ function App() {
     if (searchTerm) {
       result = result.filter(charger =>
         charger.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        charger.town.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        (charger.town && charger.town.toLowerCase().includes(searchTerm.toLowerCase())) ||
         charger.country.toLowerCase().includes(searchTerm.toLowerCase())
       );
     }
@@ -82,11 +77,12 @@ function App() {
       );
     }
 
-  setFilteredChargers(result); 
+    setFilteredChargers(result); 
   }, [searchTerm, filters, chargers]);
 
   const handleChargerClick = (charger) => {
     setSelectedCharger(charger);
+    setShowRoute(false); 
   };
 
   const handleFilterChange = (key, value) => {
@@ -97,20 +93,6 @@ function App() {
     setFilters({ country: '', minPower: 0, status: '' });
     setSearchTerm('');
   };
-
-  if (loading) {
-    return (
-      <div className="loading-container">
-        <div className="spinner"></div>
-        <h2>Loading charging stations...</h2>
-      </div>
-    );
-  }
-
-  //GPS
-  //useEffect(() => {
-    //TODO
-  //}, [userLocation]);
 
   const getUserLocation = () => {
     setLoadingLocation(true);
@@ -149,6 +131,15 @@ function App() {
     }
   };
 
+  if (loading) {
+    return (
+      <div className="loading-container">
+        <div className="spinner"></div>
+        <h2>Loading charging stations...</h2>
+      </div>
+    );
+  }
+
   return (
     <div className="App">
       <LocationButton 
@@ -174,19 +165,23 @@ function App() {
         />
       </Sidebar>
 
-      <div className="map-with-sidebar">
-        <Map 
-          chargers={filteredChargers}
-          selectedCharger={selectedCharger}
-          onMarkerClick={handleChargerClick}
-          userLocation={userLocation}
-        />
-      </div>
+      <Map 
+        chargers={filteredChargers}
+        selectedCharger={selectedCharger}
+        onMarkerClick={handleChargerClick}
+        userLocation={userLocation}
+        showRoute={showRoute}
+      />
 
       {selectedCharger && (
         <Details
           charger={selectedCharger}
-          onClose={() => setSelectedCharger(null)}
+          onClose={() => {
+            setSelectedCharger(null);
+            setShowRoute(false); 
+          }}
+          onShowRoute={() => setShowRoute(true)} 
+          userLocation={userLocation}
         />
       )}
     </div>

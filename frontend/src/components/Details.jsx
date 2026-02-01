@@ -1,7 +1,7 @@
 import React from 'react';
 import './Details.css';
 
-const Details = ({ charger, onClose }) => {
+const Details = ({ charger, onClose, onShowRoute, userLocation }) => {
   if (!charger) return null;
 
   const displayValue = (value) => {
@@ -92,12 +92,10 @@ const Details = ({ charger, onClose }) => {
           </button>
           <button 
             className="btn btn-primary"
-            onClick={() => {
-              const url = `https://www.google.com/maps/dir/?api=1&destination=${charger.latitude},${charger.longitude}`;
-              window.open(url, '_blank');
-            }}
+            onClick={onShowRoute}
+            disabled={!userLocation}
           >
-            Get Directions
+            {userLocation ? 'Get Directions' : 'Enable Location First'}
           </button>
         </div>
       </div>

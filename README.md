@@ -65,7 +65,7 @@ This will:
 - [x] DynamoDB data storage
 - [x] EX YU-wide charging station coverage 
 - [x] Frontend with interactive map
-- [ ] GPS feature
+- [x] GPS feature
 - [ ] Search by various parameters
 - [ ] Mobile responsive design 
 - [ ] AWS Cognito authentication

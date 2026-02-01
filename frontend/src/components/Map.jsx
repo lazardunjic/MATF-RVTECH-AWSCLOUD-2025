@@ -2,6 +2,7 @@ import React, { useEffect } from 'react';
 import { MapContainer, TileLayer, Marker, Popup, useMap, ZoomControl } from 'react-leaflet';
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
+import RoutingControl from './RoutingControl';
 
 delete L.Icon.Default.prototype._getIconUrl;
 
@@ -53,7 +54,7 @@ function MapController({ selectedCharger, userLocation, onMapReady }) {
   return null;
 }
 
-const Map = ({ chargers, selectedCharger, onMarkerClick, userLocation, onMapReady }) => {
+const Map = ({ chargers, selectedCharger, onMarkerClick, userLocation, onMapReady, showRoute }) => {
   return (
     <MapContainer 
       center={[44.0, 21.0]} 
@@ -73,6 +74,16 @@ const Map = ({ chargers, selectedCharger, onMarkerClick, userLocation, onMapRead
         userLocation={userLocation}
         onMapReady={onMapReady}
       />
+
+      {showRoute && userLocation && selectedCharger && (
+        <RoutingControl 
+          start={userLocation}
+          end={{
+            latitude: selectedCharger.latitude,
+            longitude: selectedCharger.longitude
+          }}
+        />
+      )}
       
       {userLocation && (
         <Marker 
