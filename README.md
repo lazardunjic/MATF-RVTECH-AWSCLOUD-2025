@@ -61,7 +61,50 @@ This will:
 - Open Charge Map API
 
 ## 🧪 Testing
-- WILL BE DONE IN FUTURE 
+### Backend API Testing
+
+We use automated shell scripts to test authentication functionality instead of traditional unit tests. These scripts test the complete flow including LocalStack, Cognito, Lambda functions, and API Gateway.
+
+#### Available Test Scripts
+
+All test scripts are located in `infrastructure/scripts/`:
+
+1. **`auth.sh`** - Tests login functionality
+```bash
+   ./infrastructure/scripts/test-auth.sh
+```
+   - Creates a test user in Cognito
+   - Tests login via Lambda
+   - Tests login via API Gateway
+   - Validates JWT token generation
+
+2. **`test-register.sh`** - Tests user registration
+```bash
+   ./infrastructure/scripts/register.sh
+```
+   - Tests new user registration
+   - Confirms user in Cognito
+   - Tests duplicate registration rejection
+   - Validates login with newly registered user
+   - Tests registration via API Gateway
+
+3. **`test-verify.sh`** - Tests token verification
+```bash
+   ./infrastructure/scripts/verify.sh
+```
+   - Tests valid token verification
+   - Tests invalid token rejection
+   - Tests missing token handling
+   - Validates user information extraction from JWT
+
+4. **`logout.sh`** - Tests logout functionality
+```bash
+   ./infrastructure/scripts/test-logout.sh
+```
+   - Tests logout with valid token
+   - Validates token invalidation after logout
+   - Tests logout with invalid token
+   - Tests logout without token
 
 ## 🔮 Roadmap
 
@@ -71,7 +114,7 @@ This will:
 - [x] Frontend with interactive map
 - [x] GPS feature
 - [x] Search by various parameters
-- [ ] AWS Cognito authentication
+- [x] AWS Cognito authentication
 
 ## 👤 Author
 Lazar Dunjic  265/2021
