@@ -1,7 +1,7 @@
 // Auto-generated configuration
-// Last updated: пон,  2. феб 2026.  23:25:41 CET
+// Last updated: пон,  2. феб 2026.  23:46:02 CET
 
-export const API_BASE_URL = 'http://localhost:4566/restapis/cmw2cddmvz/dev/_user_request_';
+export const API_BASE_URL = 'http://localhost:4566/restapis/uknohl9ewp/dev/_user_request_';
 
 export const API_ENDPOINTS = {
   GET_CHARGERS: `${API_BASE_URL}/chargers`,

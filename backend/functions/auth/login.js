@@ -6,7 +6,6 @@ const cognito = new AWS.CognitoIdentityServiceProvider({
 });
 
 exports.handler = async(event) => {
-    console.log('=== LOGIN START ===');
     console.log('Region:', process.env.AWS_REGION);
     console.log('Endpoint:', process.env.AWS_ENDPOINT_URL);
     console.log('User Pool Client ID:', process.env.USER_POOL_CLIENT_ID);
@@ -62,7 +61,6 @@ exports.handler = async(event) => {
         };
         
     } catch (error) {
-        console.error('=== LOGIN ERROR ===');
         console.error('Error:', error);
         console.error('Code:', error.code);
         console.error('Message:', error.message);
