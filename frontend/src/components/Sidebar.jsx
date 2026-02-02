@@ -4,7 +4,7 @@ import { MdEvStation, MdLocationOn, MdPower, MdLogin } from 'react-icons/md';
 import { FaInfoCircle } from 'react-icons/fa';
 import './Sidebar.css';
 
-const Sidebar = ({ chargers, onChargerClick, selectedCharger }) => {
+const Sidebar = ({ chargers, onChargerClick, selectedCharger, children }) => {
   const [isOpen, setIsOpen] = useState(true);
   const [filtersOpen, setFiltersOpen] = useState(true);
 
@@ -32,65 +32,8 @@ const Sidebar = ({ chargers, onChargerClick, selectedCharger }) => {
           <strong>Login / Register</strong>
         </button>
 
-        <div className="sidebar-search">
-          <div className="search-box">
-            <IoSearch className="search-icon" />
-            <input
-              type="text"
-              className="search-input"
-              placeholder="Search by location, town..."
-            />
-          </div>
-        </div>
-
-        <div className="filters-section">
-          <div className="filter-header" onClick={toggleFilters}>
-            <IoChevronDown 
-              className={`filter-icon ${filtersOpen ? 'open' : ''}`} 
-              size={16}
-            />
-            <IoFilter/>
-            <></>
-            <span className="filter-title">Filters</span>
-          </div>
-
-          {filtersOpen && (
-            <>
-              <div className="filter-group">
-                <label className="filter-label">Country</label>
-                <select className="filter-select">
-                  <option>All Countries</option>
-                  <option>Bosnia & Herzegovina</option>
-                  <option>Croatia</option>
-                  <option>North Macedonia</option>
-                  <option>Montenegro</option>
-                  <option>Serbia</option>
-                  <option>Slovenia</option>
-                </select>
-              </div>
-
-              <div className="filter-group">
-                <label className="filter-label">Minimum Power (kW)</label>
-                <input 
-                  type="text" 
-                  className="filter-input" 
-                  placeholder="e.g., 50"
-                />
-              </div>
-
-              <div className="filter-group">
-                <label className="filter-label">Status</label>
-                <select className="filter-select">
-                  <option>All Status</option>
-                  <option>Operational</option>
-                  <option>Non operational</option>
-                  <option>Unknown</option>
-                </select>
-              </div>
-            </>
-          )}
-        </div>
-
+        {children}
+        
         <div className="charger-list">
           {chargers.length === 0 ? (
             <div className="no-results">
