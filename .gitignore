@@ -26,3 +26,4 @@ infrastructure/localstack/volume/
 output.json
 response.json
 *.json.bak
+infrastructure/localstack/.env
