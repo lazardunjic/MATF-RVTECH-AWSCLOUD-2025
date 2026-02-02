@@ -1,19 +1,14 @@
 import React, { useState } from 'react';
-import { IoChevronBack, IoChevronForward, IoChevronDown, IoSearch, IoFilter } from 'react-icons/io5';
+import { IoChevronBack, IoChevronForward} from 'react-icons/io5';
 import { MdEvStation, MdLocationOn, MdPower, MdLogin } from 'react-icons/md';
 import { FaInfoCircle } from 'react-icons/fa';
 import './Sidebar.css';
 
 const Sidebar = ({ chargers, onChargerClick, selectedCharger, children }) => {
   const [isOpen, setIsOpen] = useState(true);
-  const [filtersOpen, setFiltersOpen] = useState(true);
 
   const toggleSidebar = () => {
     setIsOpen(!isOpen);
-  }
-
-  const toggleFilters = () => {
-    setFiltersOpen(!filtersOpen);
   }
 
   return (

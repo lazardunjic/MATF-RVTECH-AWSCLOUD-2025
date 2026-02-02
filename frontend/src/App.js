@@ -64,9 +64,13 @@ function App() {
     }
 
     if (filters.country) {
-      result = result.filter(charger => charger.country === filters.country);
+      if (filters.country === 'Serbia') {
+        result = result.filter(charger => charger.country === 'Serbia');
+      } else {
+        result = result.filter(charger => charger.country === filters.country);
+      }
     }
-
+    
     if (filters.minPower > 0) {
       result = result.filter(charger => charger.powerKW >= filters.minPower);
     }

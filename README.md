@@ -1,6 +1,6 @@
 # 🚗⚡ EV Charging Map - EX YU Region
 
-Serverless application for locating electric vehicle charging stations across the EX YU region. Built with AWS Lambda, DynamoDB, and LocalStack for the AWS Cloud course 2025/2026.
+Serverless application for locating electric vehicle charging stations across the EX YU region. Built with AWS Lambda, DynamoDB, and LocalStack for the Rivian AWS Cloud course 2025/2026.
 
 ## 🏗️ Architecture
 
@@ -26,6 +26,9 @@ cd MATF-RVTECH-AWSCLOUD-2025
 
 # Do all setup with
 ./infrastructure/scripts/setup.sh
+
+# Undo all setup with
+./infrastructure/scripts/destroy.sh
 ```
 
 This will:
@@ -46,7 +49,7 @@ This will:
 
 **Frontend:**
 - React 18
-- Leaflet.js (interactive maps)
+- Leaflet.js (interactive maps & navigation) 
 - Axios (HTTP client)
 
 **Infrastructure:**
@@ -59,6 +62,7 @@ This will:
 
 ## 🧪 Testing
 - WILL BE DONE IN FUTURE 
+
 ## 🔮 Roadmap
 
 - [x] Backend API with Lambda functions
@@ -66,8 +70,7 @@ This will:
 - [x] EX YU-wide charging station coverage 
 - [x] Frontend with interactive map
 - [x] GPS feature
-- [ ] Search by various parameters
-- [ ] Mobile responsive design 
+- [x] Search by various parameters
 - [ ] AWS Cognito authentication
 
 ## 👤 Author
