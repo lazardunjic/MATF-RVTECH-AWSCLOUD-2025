@@ -69,9 +69,9 @@ function transformCharger(ocmCharger) {
   const connection = ocmCharger.Connections?.[0] || {};
   const address = ocmCharger.AddressInfo || {};
   
-  const countryName = address.Country?.Title || 
-                      COUNTRY_CODE_MAP[ocmCharger._countryCode] || 
-                      'Unknown';
+  const countryName = COUNTRY_CODE_MAP[ocmCharger._countryCode] ||  
+                    address.Country?.Title ||  
+                    'Unknown';
 
   return {
     chargeId: String(ocmCharger.ID),

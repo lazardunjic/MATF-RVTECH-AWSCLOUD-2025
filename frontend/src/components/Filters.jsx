@@ -1,9 +1,11 @@
-import React from 'react';
+import React, { useState } from 'react';
 import './Filters.css';
+import { IoFilter, IoChevronDown } from 'react-icons/io5';
 
 const Filters = ({ filters, onFilterChange, onClearFilters }) => {
-  const countries = ['Serbia', 'Croatia', 'Bosnia', 'Montenegro', 'Macedonia', 
-                     'Albania', 'Slovenia', 'Bulgaria', 'Romania', 'Greece', 'Kosovo'];
+  const [isOpen, setIsOpen] = useState(true);
+  
+  const countries = ['Serbia', 'Croatia', 'Bosnia And Herzegovina', 'Montenegro', 'Macedonia', 'Slovenia'];
   
   const powerLevels = [
     { label: 'All', value: 0 },
@@ -12,66 +14,81 @@ const Filters = ({ filters, onFilterChange, onClearFilters }) => {
     { label: '150+ kW', value: 150 }
   ];
   
-  const statuses = ['Available', 'In Use', 'Unknown'];
+  const statuses = ['Operational', 'Unvailable', 'Unknown'];
 
   return (
     <div className="filters-container">
-      <div className="filters-header">
+      <div className="filters-header" onClick={() => setIsOpen(!isOpen)}>
+        <IoFilter className='filter-icon'/>
+        <IoChevronDown 
+          className={`chevron-icon ${isOpen ? 'open' : ''}`}
+          size={16}
+        />
         <span className="filters-title">Filters</span>
-        <button className="clear-filters" onClick={onClearFilters}>
+        <button 
+          className="clear-filters" 
+          onClick={(e) => {
+            e.stopPropagation(); 
+            onClearFilters();
+          }}
+        >
           Clear All
         </button>
       </div>
 
-      <div className="filter-group">
-        <label className="filter-label">Country</label>
-        <select 
-          className="filter-select"
-          value={filters.country}
-          onChange={(e) => onFilterChange('country', e.target.value)}
-        >
-          <option value="">All Countries</option>
-          {countries.map(country => (
-            <option key={country} value={country}>{country}</option>
-          ))}
-        </select>
-      </div>
-
-      <div className="filter-group">
-        <label className="filter-label">Minimum Power</label>
-        <div className="filter-chips">
-          {powerLevels.map(level => (
-            <div
-              key={level.value}
-              className={`filter-chip ${filters.minPower === level.value ? 'active' : ''}`}
-              onClick={() => onFilterChange('minPower', level.value)}
+      {isOpen && (
+        <>
+          <div className="filter-group">
+            <label className="filter-label">Country</label>
+            <select 
+              className="filter-select"
+              value={filters.country}
+              onChange={(e) => onFilterChange('country', e.target.value)}
             >
-              {level.label}
-            </div>
-          ))}
-        </div>
-      </div>
-
-      <div className="filter-group">
-        <label className="filter-label">Status</label>
-        <div className="filter-chips">
-          <div
-            className={`filter-chip ${filters.status === '' ? 'active' : ''}`}
-            onClick={() => onFilterChange('status', '')}
-          >
-            All
+              <option value="">All Countries</option>
+              {countries.map(country => (
+                <option key={country} value={country}>{country}</option>
+              ))}
+            </select>
           </div>
-          {statuses.map(status => (
-            <div
-              key={status}
-              className={`filter-chip ${filters.status === status ? 'active' : ''}`}
-              onClick={() => onFilterChange('status', status)}
-            >
-              {status}
+
+          <div className="filter-group">
+            <label className="filter-label">Minimum Power</label>
+            <div className="filter-chips">
+              {powerLevels.map(level => (
+                <div
+                  key={level.value}
+                  className={`filter-chip ${filters.minPower === level.value ? 'active' : ''}`}
+                  onClick={() => onFilterChange('minPower', level.value)}
+                >
+                  {level.label}
+                </div>
+              ))}
             </div>
-          ))}
-        </div>
-      </div>
+          </div>
+
+          <div className="filter-group">
+            <label className="filter-label">Status</label>
+            <div className="filter-chips">
+              <div
+                className={`filter-chip ${filters.status === '' ? 'active' : ''}`}
+                onClick={() => onFilterChange('status', '')}
+              >
+                All
+              </div>
+              {statuses.map(status => (
+                <div
+                  key={status}
+                  className={`filter-chip ${filters.status === status ? 'active' : ''}`}
+                  onClick={() => onFilterChange('status', status)}
+                >
+                  {status}
+                </div>
+              ))}
+            </div>
+          </div>
+        </>
+      )}
     </div>
   );
 };
