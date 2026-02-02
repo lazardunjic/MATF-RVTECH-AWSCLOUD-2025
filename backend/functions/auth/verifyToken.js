@@ -5,7 +5,7 @@ const cognito = new AWS.CognitoIdentityServiceProvider({
 });
 
 exports.handler = async(event) => {
-    console.log('=== VERIFY TOKEN START ===');
+    console.log('Token verification...');
 
     try {
         const authHeader = event.headers?.Authorization || event.headers?.authorization;
