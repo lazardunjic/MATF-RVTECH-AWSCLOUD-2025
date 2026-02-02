@@ -10,7 +10,6 @@ exports.handler = async (event) => {
     const tableName = process.env.CHARGERS_TABLE || 'charging-map-chargers-dev';
     const params = { TableName: tableName };
     
-    // Search by town using GSI
     if (town) {
       params.IndexName = 'TownIndex';
       params.KeyConditionExpression = 'town = :town';
@@ -34,7 +33,6 @@ exports.handler = async (event) => {
       };
     }
     
-    // Scan with filters
     let filterExpressions = [];
     params.ExpressionAttributeValues = {};
     params.ExpressionAttributeNames = {};

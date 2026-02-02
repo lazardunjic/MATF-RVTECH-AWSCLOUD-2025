@@ -14,7 +14,7 @@ const Filters = ({ filters, onFilterChange, onClearFilters }) => {
     { label: '150+ kW', value: 150 }
   ];
   
-  const statuses = ['Operational', 'Unvailable', 'Unknown'];
+  const statuses = ['Operational', 'Unavailable', 'Unknown'];
 
   return (
     <div className="filters-container">

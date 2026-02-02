@@ -23,6 +23,8 @@ provider:
   environment:
     CHARGERS_TABLE: ${self:service}-chargers-${self:provider.stage}
     OCM_API_KEY: 'aea75c5e-32c1-472f-999e-f012e928680f'
+    #USER_POOL_ID: !Ref CognitoUserPool
+    #USER_POOL_CLIENT_ID: !Ref CognitoUserPoolClient
   iam:
     role:
       statements:
@@ -39,6 +41,18 @@ provider:
               - "/"
               - - Fn::GetAtt: [ChargersTable, Arn]
                 - "index/*"
+        - Effect: Allow
+          Action:
+            - cognito-idp:AdminInitiateAuth
+            - cognito-idp:AdminCreateUser
+            - cognito-idp:AdminSetUserPassword
+            - cognito-idp:SignUp
+            - cognito-idp:InitiateAuth
+            - cognito-idp:GetUser
+            - cognito-idp:GlobalSignOut
+            - cognito-idp:AdminGetUser
+          Resource: "*"
+            #- Fn::GetAtt: [CognitoUserPool, Arn]
         - Effect: Allow
           Action:
             - logs:CreateLogGroup
@@ -85,6 +99,61 @@ functions:
       - http:
           path: search
           method: get
+          cors: true
+
+  login:
+    handler: functions/auth/login.handler
+    description: User login with cognito 
+    timeout: 30
+    environment:
+      USER_POOL_ID:
+        Ref: CognitoUserPool
+      USER_POOL_CLIENT_ID:
+        Ref: CognitoUserPoolClient
+    events:
+      - http:
+          path: auth/login
+          method: post
+          cors: true
+    
+  register:
+    handler: functions/auth/register.handler
+    description: User register with Coginto 
+    timeout: 30
+    environment:
+      USER_POOL_ID:
+        Ref: CognitoUserPool
+      USER_POOL_CLIENT_ID:
+        Ref: CognitoUserPoolClient
+    events:
+      - http:
+          path: auth/register
+          method: post
+          cors: true
+    
+  verifyToken:
+    handler: functions/auth/verifyToken.handler
+    description: Verify JWT token 
+    timeout: 10
+    environment:
+      USER_POOL_ID:
+        Ref: CognitoUserPool
+      USER_POOL_CLIENT_ID:
+        Ref: CognitoUserPoolClient
+    events:
+      - http:
+          path: auth/verify
+          method: post
+          cors: true
+
+  logout:
+    handler: functions/auth/logout.handler
+    description: User logout
+    timeout: 10
+    events:
+      - http:
+          path: auth/logout
+          method: post
           cors: true
 
 resources:
@@ -137,6 +206,45 @@ resources:
         ResponseType: DEFAULT_5XX
         RestApiId:
           Ref: ApiGatewayRestApi
+      
+    CognitoUserPool:
+      Type: AWS::Cognito::UserPool
+      Properties:
+        UserPoolName: charging-map-users-${self:provider.stage}
+        AutoVerifiedAttributes:
+          - email
+        UsernameAttributes:
+          - email
+        Policies:
+          PasswordPolicy:
+            MinimumLength: 8
+            RequireUppercase: true
+            RequireLowercase: true
+            RequireNumbers: true
+            RequireSymbols: false
+        Schema:
+          - Name: email
+            AttributeDataType: String
+            Required: true
+            Mutable: false
+          - Name: name
+            AttributeDataType: String
+            Required: false
+            Mutable: true
+        EmailConfiguration:
+          EmailSendingAccount: COGNITO_DEFAULT
+    
+    CognitoUserPoolClient:
+      Type: AWS::Cognito::UserPoolClient
+      Properties:
+        ClientName: charging-map-client-${self:provider.stage}
+        UserPoolId:
+          Ref: CognitoUserPool
+        ExplicitAuthFlows:
+          - ALLOW_USER_PASSWORD_AUTH
+          - ALLOW_REFRESH_TOKEN_AUTH
+        GenerateSecret: false
+        PreventUserExistenceErrors: ENABLED
 
   Outputs:
     ApiGatewayUrl:
@@ -148,3 +256,17 @@ resources:
       Description: DynamoDB table name
       Value:
         Ref: ChargersTable
+
+    UserPoolId:
+        Description: Cognito User Pool ID
+        Value:
+          Ref: CognitoUserPool
+        Export:
+          Name: ${self:service}-${self:provider.stage}-UserPoolId
+
+    UserPoolClientId:
+        Description: Cognito User Pool Client ID
+        Value:
+          Ref: CognitoUserPoolClient
+        Export:
+          Name: ${self:service}-${self:provider.stage}-UserPoolClientId

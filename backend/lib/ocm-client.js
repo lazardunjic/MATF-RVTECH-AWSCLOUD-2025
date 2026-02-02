@@ -41,7 +41,6 @@ const transformCharger = (ocmCharger) => {
     latitude: address.Latitude || 0,
     longitude: address.Longitude || 0,
     town: address.Town || 'Unknown',
-    // ... rest of transformation
   };
 };
 
