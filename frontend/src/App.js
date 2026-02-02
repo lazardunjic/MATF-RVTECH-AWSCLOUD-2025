@@ -6,6 +6,7 @@ import SearchBar from './components/SearchBar';
 import Filters from './components/Filters';
 import Details from './components/Details';
 import LocationButton from './components/LocationButton';
+import Auth from './components/Auth';
 import './App.css';
 
 function App() {
@@ -24,6 +25,7 @@ function App() {
     minPower: 0,
     status: ''
   });
+  const [showAuthModal, setShowAuthModal] = useState(false);
 
   useEffect(() => {
     const fetchChargers = async () => {
@@ -156,6 +158,7 @@ function App() {
         chargers={filteredChargers}
         onChargerClick={handleChargerClick}
         selectedCharger={selectedCharger?.chargeId}
+        onAuthClick={() => setShowAuthModal(true)}
       >
         <SearchBar 
           searchTerm={searchTerm}
@@ -188,6 +191,11 @@ function App() {
           userLocation={userLocation}
         />
       )}
+
+      <Auth 
+        isOpen={showAuthModal}
+        onClose={() => setShowAuthModal(false)}
+      />
     </div>
   );
 }

@@ -4,7 +4,7 @@ import { MdEvStation, MdLocationOn, MdPower, MdLogin } from 'react-icons/md';
 import { FaInfoCircle } from 'react-icons/fa';
 import './Sidebar.css';
 
-const Sidebar = ({ chargers, onChargerClick, selectedCharger, children }) => {
+const Sidebar = ({ chargers, onChargerClick, selectedCharger, children, onAuthClick }) => {
   const [isOpen, setIsOpen] = useState(true);
 
   const toggleSidebar = () => {
@@ -22,7 +22,7 @@ const Sidebar = ({ chargers, onChargerClick, selectedCharger, children }) => {
           </div>
         </div>
 
-        <button className="login-btn">
+        <button className="login-btn" onClick={onAuthClick}>
           <MdLogin className="login-icon" size={22}/>
           <strong>Login / Register</strong>
         </button>
