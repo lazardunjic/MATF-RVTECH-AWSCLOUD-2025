@@ -1,16 +1,11 @@
 // Auto-generated configuration
-// Last updated: уто,  3. феб 2026.  12:44:09 CET
+// Last updated: уто,  3. феб 2026.  13:11:28 CET
 
-export const API_BASE_URL = 'http://localhost:4566/restapis/bg0lbdsar4/dev/_user_request_';
+export const API_BASE_URL = 'http://localhost:4566/restapis/fzgiytzo2y/dev/_user_request_';
 
 export const API_ENDPOINTS = {
   GET_CHARGERS: `${API_BASE_URL}/chargers`,
   GET_CHARGER_BY_ID: (id) => `${API_BASE_URL}/chargers/${id}`,
   SEARCH_CHARGERS: `${API_BASE_URL}/search`,
-  SYNC_DATA: `${API_BASE_URL}/sync`,
-  LOGIN: `${API_BASE_URL}/auth/login`,
-  REGISTER: `${API_BASE_URL}/auth/register`,
-  VERIFY_TOKEN: `${API_BASE_URL}/auth/verify`,
-  LOGOUT: `${API_BASE_URL}/auth/logout`
-
+  SYNC_DATA: `${API_BASE_URL}/sync`
 };

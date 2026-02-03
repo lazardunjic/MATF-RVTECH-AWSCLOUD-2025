@@ -63,6 +63,12 @@ exports.handler = async(event) => {
         const result = await cognito.signUp(params).promise();
         console.log('Registration successful!');
 
+        await cognito.adminConfirmSignUp({
+            UserPoolId: process.env.USER_POOL_ID,
+            Username: email
+        }).promise();
+        console.log('User auto-confirmed');
+
         return {
             statusCode: 201,
             headers: {
