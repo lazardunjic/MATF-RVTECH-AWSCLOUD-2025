@@ -7,5 +7,10 @@ export const API_ENDPOINTS = {
   GET_CHARGERS: `${API_BASE_URL}/chargers`,
   GET_CHARGER_BY_ID: (id) => `${API_BASE_URL}/chargers/${id}`,
   SEARCH_CHARGERS: `${API_BASE_URL}/search`,
-  SYNC_DATA: `${API_BASE_URL}/sync`
+  SYNC_DATA: `${API_BASE_URL}/sync`,
+  LOGIN: `${API_BASE_URL}/auth/login`,
+  REGISTER: `${API_BASE_URL}/auth/register`,
+  VERIFY_TOKEN: `${API_BASE_URL}/auth/verify`,
+  LOGOUT: `${API_BASE_URL}/auth/logout`
+
 };
