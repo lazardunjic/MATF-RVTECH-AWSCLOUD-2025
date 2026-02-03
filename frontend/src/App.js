@@ -1,5 +1,6 @@
 import { API_ENDPOINTS } from './config';
 import React, { useEffect, useState } from 'react';
+import { API_BASE_URL } from './config';
 import Map from './components/Map';
 import Sidebar from './components/Sidebar';
 import SearchBar from './components/SearchBar';
@@ -13,20 +14,20 @@ function App() {
   const [userLocation, setUserLocation] = useState(null);
   const [locationError, setLocationError] = useState(null);
   const [loadingLocation, setLoadingLocation] = useState(false);
-
   const [chargers, setChargers] = useState([]);
   const [filteredChargers, setFilteredChargers] = useState([]);
   const [loading, setLoading] = useState(true);
   const [selectedCharger, setSelectedCharger] = useState(null);
   const [searchTerm, setSearchTerm] = useState('');
   const [showRoute, setShowRoute] = useState(false); 
+  const [showAuthModal, setShowAuthModal] = useState(false);
+  const [user, setUser] = useState(null);
   const [filters, setFilters] = useState({
     country: '',
     minPower: 0,
     status: ''
   });
-  const [showAuthModal, setShowAuthModal] = useState(false);
-
+  
   useEffect(() => {
     const fetchChargers = async () => {
       try {
@@ -52,6 +53,15 @@ function App() {
     };
 
     fetchChargers();
+  }, []);
+
+  useEffect(() => {
+    const accessToken = localStorage.getItem('accessToken');
+    const userEmail = localStorage.getItem('userEmail');
+    
+    if (accessToken && userEmail) {
+      setUser({ email: userEmail });
+    }
   }, []);
 
   useEffect(() => {
@@ -137,6 +147,38 @@ function App() {
     }
   };
 
+  const handleLoginSuccess = (userData) => {
+    setUser({ email: userData.email });
+    setShowAuthModal(false);
+  };
+
+  const handleLogout = async () => {
+    try {
+      const accessToken = localStorage.getItem('accessToken');
+      
+      if (accessToken) {
+        await fetch(`${API_BASE_URL}/auth/logout`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${accessToken}`
+          }
+        });
+      }
+    
+    } catch (err) {
+      console.error('Logout error:', err);
+    
+    } finally {
+      localStorage.removeItem('accessToken');
+      localStorage.removeItem('idToken');
+      localStorage.removeItem('refreshToken');
+      localStorage.removeItem('userEmail');
+      
+      setUser(null);
+    }
+  };
+  
   if (loading) {
     return (
       <div className="loading-container">
@@ -159,6 +201,8 @@ function App() {
         onChargerClick={handleChargerClick}
         selectedCharger={selectedCharger?.chargeId}
         onAuthClick={() => setShowAuthModal(true)}
+        onLogout={handleLogout}
+        user={user}
       >
         <SearchBar 
           searchTerm={searchTerm}
@@ -195,6 +239,7 @@ function App() {
       <Auth 
         isOpen={showAuthModal}
         onClose={() => setShowAuthModal(false)}
+        onLoginSuccess={handleLoginSuccess}
       />
     </div>
   );
