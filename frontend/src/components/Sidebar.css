@@ -312,3 +312,67 @@
 .sidebar::-webkit-scrollbar-thumb:hover {
   background: rgba(255, 255, 255, 0.5);
 }
+
+.user-section {
+  margin: 15px;
+  padding: 16px;
+  background: white;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.user-info {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 12px;
+}
+
+.user-avatar {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #68c4af 0%, #5ab09d 100%);
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.5rem;
+  font-weight: bold;
+}
+
+.user-details {
+  flex: 1;
+}
+
+.user-email {
+  font-weight: 600;
+  color: #212529;
+  font-size: 0.9rem;
+  margin-bottom: 2px;
+  word-break: break-word;
+}
+
+.user-status {
+  font-size: 0.75rem;
+  color: #68c4af;
+  font-weight: 500;
+}
+
+.logout-btn {
+  width: 100%;
+  padding: 10px;
+  background: #f8f9fa;
+  border: 2px solid #e9ecef;
+  border-radius: 8px;
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: #212529;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.logout-btn:hover {
+  background: #e9ecef;
+  border-color: #dee2e6;
+}

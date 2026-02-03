@@ -4,7 +4,7 @@ import { MdEvStation, MdLocationOn, MdPower, MdLogin } from 'react-icons/md';
 import { FaInfoCircle } from 'react-icons/fa';
 import './Sidebar.css';
 
-const Sidebar = ({ chargers, onChargerClick, selectedCharger, children, onAuthClick }) => {
+const Sidebar = ({ chargers, onChargerClick, selectedCharger, children, onAuthClick, onLogout, user }) => {
   const [isOpen, setIsOpen] = useState(true);
 
   const toggleSidebar = () => {
@@ -22,10 +22,27 @@ const Sidebar = ({ chargers, onChargerClick, selectedCharger, children, onAuthCl
           </div>
         </div>
 
-        <button className="login-btn" onClick={onAuthClick}>
-          <MdLogin className="login-icon" size={22}/>
-          <strong>Login / Register</strong>
-        </button>
+        {user ? (
+          <div className="user-section">
+            <div className="user-info">
+              <div className="user-avatar">
+                {user.email.charAt(0).toUpperCase()}
+              </div>
+              <div className="user-details">
+                <div className="user-email">{user.email}</div>
+                <div className="user-status">Logged in</div>
+              </div>
+            </div>
+            <button className="logout-btn" onClick={onLogout}>
+              <strong>Logout</strong>
+            </button>
+          </div>
+        ) : (
+          <button className="login-btn" onClick={onAuthClick}>
+            <MdLogin className="login-icon" size={22}/>
+            <strong>Login / Register</strong>
+          </button>
+        )}
 
         {children}
         
