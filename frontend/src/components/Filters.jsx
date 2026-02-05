@@ -5,7 +5,7 @@ import { IoFilter, IoChevronDown } from 'react-icons/io5';
 const Filters = ({ filters, onFilterChange, onClearFilters }) => {
   const [isOpen, setIsOpen] = useState(true);
   
-  const countries = ['Serbia', 'Croatia', 'Bosnia And Herzegovina', 'Montenegro', 'Macedonia', 'Slovenia'];
+  const countries = ['Serbia', 'Croatia', 'Bosnia and Herzegovina', 'Montenegro', 'North Macedonia', 'Slovenia'];
   
   const powerLevels = [
     { label: 'All', value: 0 },
