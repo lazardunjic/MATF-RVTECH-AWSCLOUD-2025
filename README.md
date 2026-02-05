@@ -16,12 +16,13 @@ Serverless application for locating electric vehicle charging stations across th
 - Node.js 18+
 - Docker & Docker Compose
 - AWS CLI v2 with `awslocal` wrapper
+- LocalStack
 - jq (for JSON parsing in scripts)
 
 ### One-Command Setup
 ```bash
 # Clone repository
-git clone <repository-url>
+git clone https://github.com/lazardunjic/MATF-RVTECH-AWSCLOUD-2025.git
 cd MATF-RVTECH-AWSCLOUD-2025
 
 # Do all setup with
@@ -33,7 +34,7 @@ cd MATF-RVTECH-AWSCLOUD-2025
 
 This will:
 1. Start LocalStack container
-2. Deploy 4 Lambda functions
+2. Deploy Lambda functions
 3. Create DynamoDB table
 4. Sync data
 5. Display API Gateway URL and stats
@@ -58,12 +59,12 @@ This will:
 - Serverless-LocalStack plugin
 
 **Data Source:**
-- Open Charge Map API
+- [Open Charge Map](https://openchargemap.org/) 
 
 ## 🧪 Testing
 ### Backend API Testing
 
-We use automated shell scripts to test authentication functionality instead of traditional unit tests. These scripts test the complete flow including LocalStack, Cognito, Lambda functions, and API Gateway.
+Created automated shell scripts to test authentication functionality instead of traditional unit tests. These scripts test the complete flow including LocalStack, Cognito, Lambda functions, and API Gateway.
 
 #### Available Test Scripts
 
@@ -113,7 +114,7 @@ All test scripts are located in `infrastructure/scripts/`:
 - [x] EX YU-wide charging station coverage 
 - [x] Frontend with interactive map
 - [x] GPS feature
-- [x] Search by various parameters
+- [x] Search/Filter by various parameters
 - [x] AWS Cognito authentication
 
 ## 👤 Author
