@@ -5,7 +5,7 @@ Serverless application for locating electric vehicle charging stations across th
 ## 🏗️ Architecture
 
 **Serverless Backend:**
-- **AWS Lambda** - 4 serverless functions for data sync and retrieval
+- **AWS Lambda** - 4 core serverless functions for data sync and retrieval, with aditional 4 for auth
 - **DynamoDB** - NoSQL database for charging stations
 - **API Gateway** - RESTful API endpoints
 - **LocalStack** - Local AWS cloud emulation
